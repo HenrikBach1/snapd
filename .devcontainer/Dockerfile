@@ -15,7 +15,6 @@ ENV remoteUser=vscode
 ENV PACKAGER_NAME="Henrik Bach"
 ENV PACKAGER_EMAIL="bach.henrik@gmail.com"
 
-        # nano \
         # EOL
 RUN apk update \
     && apk upgrade \
@@ -25,6 +24,7 @@ RUN apk update \
         doas \
         git \
         make \
+        nano \
         sed \
         su-exec \
         sudo \
