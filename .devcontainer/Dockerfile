@@ -58,5 +58,5 @@ RUN sudo sed -i 's/Your\ Name/'"${PACKAGER_NAME}"'/g' /etc/abuild.conf
 # RUN addgroup $remoteUser abuild
 RUN sudo usermod -a -G abuild $remoteUser
 
-RUN git config --global user.name ${PACKAGER_NAME}
-RUN git config --global user.email ${PACKAGER_EMAIL}
+RUN git config --global user.name "${PACKAGER_NAME}"
+RUN git config --global user.email "${PACKAGER_EMAIL}"
