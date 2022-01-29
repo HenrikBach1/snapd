@@ -1,10 +1,11 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/alpine
+// For format details, see https://aka.ms/devcontainer.json.
+// For config options, see the README at: https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/alpine
 {
 	"name": "Alpine",
 	"build": {
 		"dockerfile": "Dockerfile",
 		// Update 'VARIANT' to pick an Alpine version: 3.12, 3.13, 3.14, 3.15
+		// HB1: It seems that build.args doesn't pass to Dockerfile build: devcontainer build.args not passed to build image to podman/docker?:
 		"args": { "VARIANT": "3.14" }
 	},
 	
@@ -23,8 +24,8 @@
 
 	// Replace when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--init", "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
-	"runArgs": ["--privileged"],
+	// "runArgs": ["--privileged"],
 
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "vscode"
+	"remoteUser": "vscode"
 }
