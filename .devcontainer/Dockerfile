@@ -31,32 +31,34 @@ RUN apk update \
         shadow \
         wget
 
-RUN $(mkdir -p /var/cache/distfiles \
-    && chmod a+w /var/cache/distfiles)
-
 RUN echo "$remoteUser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+RUN echo "permit nopass keepenv :$remoteUser" | sudo tee -a /etc/doas.conf
 
 ###############################################################################
 # Switch to remoteUser
 ###############################################################################
 
+# Following: https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package:
+
 USER $remoteUser
 
-ENV SUDO="doas abuild-keygen -a -i"
 ENV APORTS_DIR="/data/alpine/aports"
+ENV SUDO="doas abuild-keygen -a -i"
 
-# RUN sudo mkdir -p ${APORTS_DIR} && sudo git clone https://gitlab.alpinelinux.org/alpine/aports ${APORTS_DIR}
+RUN doas mkdir -p ${APORTS_DIR} \
+    && doas git clone https://gitlab.alpinelinux.org/alpine/aports ${APORTS_DIR}
 
-# RUN sudo chown $remoteUser:$remoteUser -R /workspaces
-
-RUN sudo sed -i s/#PACKAGER=/PACKAGER=/g /etc/abuild.conf
-RUN sudo sed -i s/#MAINTAINER=/MAINTAINER=/g /etc/abuild.conf
-RUN sudo sed -i 's/your@email.address/'"${PACKAGER_EMAIL}"'/g' /etc/abuild.conf
-RUN sudo sed -i 's/Your\ Name/'"${PACKAGER_NAME}"'/g' /etc/abuild.conf
-
-# RUN doas addgroup $remoteUser abuild
-# RUN addgroup $remoteUser abuild
-RUN sudo usermod -a -G abuild $remoteUser
+RUN doas addgroup $remoteUser abuild
 
 RUN git config --global user.name "${PACKAGER_NAME}"
 RUN git config --global user.email "${PACKAGER_EMAIL}"
+
+RUN doas sed -i s/#PACKAGER=/PACKAGER=/g /etc/abuild.conf
+RUN doas sed -i s/#MAINTAINER=/MAINTAINER=/g /etc/abuild.conf
+RUN doas sed -i 's/your@email.address/'"${PACKAGER_EMAIL}"'/g' /etc/abuild.conf
+RUN doas sed -i 's/Your\ Name/'"${PACKAGER_NAME}"'/g' /etc/abuild.conf
+
+RUN doas mkdir -p /var/cache/distfiles \
+    && doas chgrp abuild -R /var/cache/distfiles \
+    && doas chmod g+w -R /var/cache/distfiles
