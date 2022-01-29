@@ -82,6 +82,7 @@ RUN cd ${TOAPK_DIR} \
     && doas make install-bin \
     && make compile-lua
 #     && doas make install-lua
+#     && make test-all
 
 # ENV APORTS_DIR="/data/alpine/aports"
 # RUN doas mkdir -p ${APORTS_DIR} \
