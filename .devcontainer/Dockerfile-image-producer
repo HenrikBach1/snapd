@@ -15,6 +15,8 @@ ENV remoteUser=vscode
 ENV PACKAGER_NAME="Henrik Bach"
 ENV PACKAGER_EMAIL="bach.henrik@gmail.com"
 
+ENV SNAPD_ABUILD_DIR=./packaging/alpine-3.14/snapd/
+
         # EOL
 RUN apk update \
     && apk upgrade \
@@ -46,17 +48,7 @@ RUN echo "permit nopass keepenv :$remoteUser" | sudo tee -a /etc/doas.conf
 
 USER $remoteUser
 
-ENV SUDO="doas abuild-keygen -a -i"
-
 RUN doas addgroup $remoteUser abuild
-
-RUN git config --global user.name "${PACKAGER_NAME}"
-RUN git config --global user.email "${PACKAGER_EMAIL}"
-
-RUN doas sed -i s/#PACKAGER=/PACKAGER=/g /etc/abuild.conf
-RUN doas sed -i s/#MAINTAINER=/MAINTAINER=/g /etc/abuild.conf
-RUN doas sed -i 's/your@email.address/'"${PACKAGER_EMAIL}"'/g' /etc/abuild.conf
-RUN doas sed -i 's/Your\ Name/'"${PACKAGER_NAME}"'/g' /etc/abuild.conf
 
 # HB1: TODO: RUN MKDIR(/var/cache/distfiles)
 RUN doas mkdir -p /var/cache/distfiles \
@@ -89,10 +81,29 @@ RUN doas mkdir -p /var/cache/distfiles \
 # #     && doas make install-lua
 # #     && make test-all
 
-# To build aports:
-ENV APORTS_DIR="/data/alpine/aports"
-# HB1: TODO: RUN GIT_CLONE(https://gitlab.alpinelinux.org/alpine/aports, ${APORTS_DIR})
-RUN doas mkdir -p ${APORTS_DIR} \
-    && doas git clone https://gitlab.alpinelinux.org/alpine/aports ${APORTS_DIR} \
-    && doas chgrp abuild -R ${APORTS_DIR} \
-    && doas chmod g+w -R ${APORTS_DIR}
+# # To build aports: Is this necessary?:
+# ENV APORTS_DIR="/data/alpine/aports"
+# # HB1: TODO: RUN GIT_CLONE(https://gitlab.alpinelinux.org/alpine/aports, ${APORTS_DIR})
+# RUN doas mkdir -p ${APORTS_DIR} \
+#     && doas git clone https://gitlab.alpinelinux.org/alpine/aports ${APORTS_DIR} \
+#     && doas chgrp abuild -R ${APORTS_DIR} \
+#     && doas chmod g+w -R ${APORTS_DIR}
+
+RUN git config --global user.name "${PACKAGER_NAME}"
+RUN git config --global user.email "${PACKAGER_EMAIL}"
+
+RUN doas sed -i s/#PACKAGER=/PACKAGER=/g /etc/abuild.conf
+RUN doas sed -i s/#MAINTAINER=/MAINTAINER=/g /etc/abuild.conf
+RUN doas sed -i 's/your@email.address/'"${PACKAGER_EMAIL}"'/g' /etc/abuild.conf
+RUN doas sed -i 's/Your\ Name/'"${PACKAGER_NAME}"'/g' /etc/abuild.conf
+
+RUN mkdir -p /home/vscode/.abuild \
+    && touch /home/vscode/.abuild/abuild.conf \
+    && cp /etc/abuild.conf /home/vscode/.abuild
+
+RUN abuild-keygen -ain
+
+# # # HB1: TODO: 
+# # WORKDIR ./packaging/alpine-3.14/snapd/
+# RUN cd ${SNAPD_ABUILD_DIR} \
+#     && abuild checksum && abuild -r
