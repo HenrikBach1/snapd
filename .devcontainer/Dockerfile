@@ -73,7 +73,7 @@ RUN doas mkdir -p /var/cache/distfiles \
 #     && doas git clone https://gitlab.com/Durrendal/toAPK.git ${TOAPK_DIR} \
 #     && doas chgrp abuild -R ${TOAPK_DIR} \
 #     && doas chmod g+w -R ${TOAPK_DIR} \
-#     && sudo ln -s $TOAPK_DIR/src/toAPK.fnl /usr/bin <------------------ Fails: https://gitlab.com/Durrendal/toAPK/-/issues/4
+#     && sudo ln -s ${TOAPK_DIR}/src/toAPK.fnl /usr/bin <------------------ Fails: https://gitlab.com/Durrendal/toAPK/-/issues/4
 
 #     # Tag : Commit
 #     # v1.0: 621b1479
@@ -93,6 +93,6 @@ RUN doas mkdir -p /var/cache/distfiles \
 ENV APORTS_DIR="/data/alpine/aports"
 # HB1: TODO: RUN GIT_CLONE(https://gitlab.alpinelinux.org/alpine/aports, ${APORTS_DIR})
 RUN doas mkdir -p ${APORTS_DIR} \
-    && doas git clone https://gitlab.alpinelinux.org/alpine/aports ${APORTS_DIR}
-    && doas chgrp abuild -R ${TOAPK_DIR} \
-    && doas chmod g+w -R ${TOAPK_DIR}
+    && doas git clone https://gitlab.alpinelinux.org/alpine/aports ${APORTS_DIR} \
+    && doas chgrp abuild -R ${APORTS_DIR} \
+    && doas chmod g+w -R ${APORTS_DIR}
