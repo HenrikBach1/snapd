@@ -1,7 +1,7 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/alpine/.devcontainer/base.Dockerfile
 
 # [Choice] Alpine version: 3.14, 3.13, 3.12, 3.11
-# HB1: It seems that build.args doesn't pass to Dockerfile build: devcontainer build.args not passed to build image to podman/docker?:
+# HB1: It seems that build.args doesn't pass to Dockerfile build from .devcontainer:
 ARG VARIANT="3.14"
 
 ARG remoteUser=vscode
@@ -10,7 +10,7 @@ ARG PACKAGER_EMAIL="bach.henrik@gmail.com"
 
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
 
-# HB1: It seems that build.args doesn't pass to Dockerfile build: devcontainer build.args not passed to build image to podman/docker?:
+# HB1: It seems that build.args doesn't pass to Dockerfile build from .devcontainer:
 ENV remoteUser=vscode
 ENV PACKAGER_NAME="Henrik Bach"
 ENV PACKAGER_EMAIL="bach.henrik@gmail.com"
