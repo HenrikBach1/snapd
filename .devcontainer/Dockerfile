@@ -77,6 +77,10 @@ RUN doas mkdir -p ${TOAPK_DIR} \
 RUN $LUA_ROCKS install luasocket --local
 # RUN $LUA_ROCKS install luasec --local
 
+    # Tag : Commit
+    # v1.0: 621b1479
+    # && git checkout 621b1479 \
+    # EOL
 RUN cd ${TOAPK_DIR} \
     && make compile-bin \
     && doas make install-bin \
@@ -85,5 +89,6 @@ RUN cd ${TOAPK_DIR} \
 #     && make test-all
 
 # ENV APORTS_DIR="/data/alpine/aports"
+# HB1: TODO: RUN GIT_CLONE(https://gitlab.alpinelinux.org/alpine/aports, ${APORTS_DIR})
 # RUN doas mkdir -p ${APORTS_DIR} \
 #     && doas git clone https://gitlab.alpinelinux.org/alpine/aports ${APORTS_DIR}
