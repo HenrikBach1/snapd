@@ -37,23 +37,23 @@ RUN apk update \
         shadow \
         wget
 
-    # ? && libsystemd \
-    # ? && go-tools \
-    # ? && python \
-    # ? python-docutils \
-    # ? && systemd \ -- openrc
+        # apparmor \
+        # libsystemd \
+        # go-tools \
+        # python \
+        # python-docutils \
+        # systemd \ -- openrc
         # EOL
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache \
-    && apparmor \
-    && git \
-    && go \
-    && libcap \
-    && libseccomp \
-    && shellcheck \
-    && squashfs-tools \
-    && xfsprogs
+        git \
+        go \
+        libcap \
+        libseccomp \
+        shellcheck \
+        squashfs-tools \
+        xfsprogs
 
 RUN echo "$remoteUser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 RUN echo "permit nopass keepenv :$remoteUser" | sudo tee -a /etc/doas.conf
