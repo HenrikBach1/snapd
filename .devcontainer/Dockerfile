@@ -89,8 +89,10 @@ RUN doas mkdir -p /var/cache/distfiles \
 # #     && doas make install-lua
 # #     && make test-all
 
-# # To build aports:
-# ENV APORTS_DIR="/data/alpine/aports"
+# To build aports:
+ENV APORTS_DIR="/data/alpine/aports"
 # HB1: TODO: RUN GIT_CLONE(https://gitlab.alpinelinux.org/alpine/aports, ${APORTS_DIR})
-# RUN doas mkdir -p ${APORTS_DIR} \
-#     && doas git clone https://gitlab.alpinelinux.org/alpine/aports ${APORTS_DIR}
+RUN doas mkdir -p ${APORTS_DIR} \
+    && doas git clone https://gitlab.alpinelinux.org/alpine/aports ${APORTS_DIR}
+    && doas chgrp abuild -R ${TOAPK_DIR} \
+    && doas chmod g+w -R ${TOAPK_DIR}
