@@ -65,29 +65,31 @@ RUN doas mkdir -p /var/cache/distfiles \
 
 #------------------------------------------------------------------------------
 
-ENV LUA_ROCKS=luarocks-5.3
-ENV TOAPK_DIR="/data/alpine/toapk"
+# # To build toAPK:
+# ENV LUA_ROCKS=luarocks-5.3
+# ENV TOAPK_DIR="/data/alpine/toapk"
+# # HB1: TODO: RUN GIT_CLONE(https://gitlab.com/Durrendal/toAPK.git, ${TOAPK_DIR})
+# RUN doas mkdir -p ${TOAPK_DIR} \
+#     && doas git clone https://gitlab.com/Durrendal/toAPK.git ${TOAPK_DIR} \
+#     && doas chgrp abuild -R ${TOAPK_DIR} \
+#     && doas chmod g+w -R ${TOAPK_DIR} \
+#     && sudo ln -s $TOAPK_DIR/src/toAPK.fnl /usr/bin <------------------ Fails: https://gitlab.com/Durrendal/toAPK/-/issues/4
 
-# HB1: TODO: RUN GIT_CLONE(https://gitlab.com/Durrendal/toAPK.git, ${TOAPK_DIR})
-RUN doas mkdir -p ${TOAPK_DIR} \
-    && doas git clone https://gitlab.com/Durrendal/toAPK.git ${TOAPK_DIR} \
-    && doas chgrp abuild -R ${TOAPK_DIR} \
-    && doas chmod g+w -R ${TOAPK_DIR}
+#     # Tag : Commit
+#     # v1.0: 621b1479
+#     # && git checkout 621b1479 \
+#     #
+#     # && $LUA_ROCKS install luasec --local \
+#     # EOL
+# RUN cd ${TOAPK_DIR} \
+#     && $LUA_ROCKS install luasocket --local
+#     && make compile-bin \
+#     && doas make install-bin \
+#     && make compile-lua <------------------ Fails: https://gitlab.com/Durrendal/toAPK/-/issues/4
+# #     && doas make install-lua
+# #     && make test-all
 
-RUN $LUA_ROCKS install luasocket --local
-# RUN $LUA_ROCKS install luasec --local
-
-    # Tag : Commit
-    # v1.0: 621b1479
-    # && git checkout 621b1479 \
-    # EOL
-RUN cd ${TOAPK_DIR} \
-    && make compile-bin \
-    && doas make install-bin \
-    && make compile-lua
-#     && doas make install-lua
-#     && make test-all
-
+# # To build aports:
 # ENV APORTS_DIR="/data/alpine/aports"
 # HB1: TODO: RUN GIT_CLONE(https://gitlab.alpinelinux.org/alpine/aports, ${APORTS_DIR})
 # RUN doas mkdir -p ${APORTS_DIR} \
