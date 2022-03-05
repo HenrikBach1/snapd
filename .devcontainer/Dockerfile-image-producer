@@ -34,6 +34,7 @@ RUN apk update \
         luarocks5.3 \
         make \
         nano \
+        openrc \
         openssl-dev \
         sed \
         shadow \
@@ -44,11 +45,12 @@ RUN apk update \
         wget \
         xfsprogs
 
+        # systemd \
         # libsystemd \
         # go-tools \
+        # \
         # python \
         # python-docutils \
-        # systemd \ -- openrc
         # EOL
 
 RUN echo "$remoteUser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
