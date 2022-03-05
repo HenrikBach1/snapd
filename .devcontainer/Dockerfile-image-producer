@@ -22,38 +22,34 @@ RUN apk update \
     && apk upgrade \
     && apk add --no-cache \
         alpine-sdk \
+        apparmor \
         curl \
         doas \
         fennel \
         git \
+        go \
+        libcap \
+        libseccomp \
         lua5.3-dev \
         luarocks5.3 \
         make \
         nano \
         openssl-dev \
         sed \
+        shadow \
+        shellcheck \
+        squashfs-tools \
         su-exec \
         sudo \
-        shadow \
-        wget
+        wget \
+        xfsprogs
 
-        # apparmor \
         # libsystemd \
         # go-tools \
         # python \
         # python-docutils \
         # systemd \ -- openrc
         # EOL
-RUN apk update \
-    && apk upgrade \
-    && apk add --no-cache \
-        git \
-        go \
-        libcap \
-        libseccomp \
-        shellcheck \
-        squashfs-tools \
-        xfsprogs
 
 RUN echo "$remoteUser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 RUN echo "permit nopass keepenv :$remoteUser" | sudo tee -a /etc/doas.conf
@@ -121,7 +117,7 @@ RUN mkdir -p /home/vscode/.abuild \
 
 RUN abuild-keygen -ain
 
-# # # HB1: TODO: 
-# # WORKDIR ./packaging/alpine-3.14/snapd/
-# RUN cd ${SNAPD_ABUILD_DIR} \
-#     && abuild checksum && abuild -r
+# # HB1: TODO: 
+# WORKDIR ./packaging/alpine-3.14/snapd/
+RUN cd ${SNAPD_ABUILD_DIR} \
+    && abuild checksum && abuild -r
