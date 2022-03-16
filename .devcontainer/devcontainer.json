@@ -1,13 +1,16 @@
 // For format details, see https://aka.ms/devcontainer.json.
 // For config options, see the README at: https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/alpine
 {
-	"name": "Alpine",
+	"name": "snapd-Alpine",
 	"build": {
 		"dockerfile": "Dockerfile-image-producer",
 		// "dockerfile": "Dockerfile-image-consumer",
 		// Update 'VARIANT' to pick an Alpine version: 3.12, 3.13, 3.14, 3.15
 		// HB1: It seems that build.args doesn't pass to Dockerfile build from .devcontainer:
-		"args": { "VARIANT": "3.15" }
+		"args": {
+			"VARIANT": "3.15"
+			,"DockerfileContext":"/home/sad/projects/snapd/snapd-github-public-master-live-devcontainer-alpine"
+		}
 	},
 	
 	// Set *default* container specific settings.json values on container create. 
