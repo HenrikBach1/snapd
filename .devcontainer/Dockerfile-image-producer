@@ -10,6 +10,8 @@ ARG PACKAGER_EMAIL="bach.henrik@gmail.com"
 
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
 
+ENV remoteUser=vscode
+
         # EOL
 RUN apk update \
     && apk upgrade \
