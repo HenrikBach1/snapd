@@ -62,4 +62,4 @@ WORKDIR ${SNAPD_ABUILD_DIR}
 RUN cd ${SNAPD_ABUILD_DIR} \
     && find .. -exec readlink -f {} \; \
     && abuild-keygen -ain \
-    && abuild checksum && abuild -r
+    && abuild checksum && abuild -rv
