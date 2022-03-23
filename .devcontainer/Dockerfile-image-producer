@@ -12,7 +12,6 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
 
 ENV remoteUser=vscode
 
-        # EOL
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache \
@@ -31,9 +30,9 @@ RUN apk update \
         shadow \
         su-exec \
         sudo \
+        tree \
         util-linux \
-        wget \
-        EOL
+        wget
 
 # snapd builddeps:
 RUN apk update \
@@ -46,15 +45,14 @@ RUN apk update \
         libseccomp \
         shellcheck \
         squashfs-tools \
-        xfsprogs \
-        EOL
+        xfsprogs
+
         # systemd \
         # libsystemd \
         # go-tools \
 
         # python \
         # python-docutils \
-        # EOL
 # Install python/pip
 ENV PYTHONUNBUFFERED=1
 RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
