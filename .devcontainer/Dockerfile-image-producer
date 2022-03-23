@@ -76,3 +76,5 @@ RUN doas addgroup $remoteUser abuild
 RUN doas mkdir -p /var/cache/distfiles \
     && doas chgrp abuild -R /var/cache/distfiles \
     && doas chmod g+w -R /var/cache/distfiles
+
+RUN abuild-keygen -ain

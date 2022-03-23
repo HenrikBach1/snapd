@@ -61,5 +61,4 @@ RUN mkdir -p /home/vscode/.abuild \
 WORKDIR ${SNAPD_ABUILD_DIR}
 RUN cd ${SNAPD_ABUILD_DIR} \
     && find .. -exec readlink -f {} \; \
-    && abuild-keygen -ain \
-    && abuild checksum && abuild -rv
+    && script -c 'abuild checksum && abuild -rv'
