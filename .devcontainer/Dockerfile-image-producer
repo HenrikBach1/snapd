@@ -16,6 +16,7 @@ RUN apk update \
     && apk upgrade \
     && apk add --no-cache \
         alpine-sdk \
+        atools \
         curl \
         doas \
         fennel \
