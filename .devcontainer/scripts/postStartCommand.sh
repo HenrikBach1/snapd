@@ -58,9 +58,8 @@ RUN mkdir -p /home/vscode/.abuild \
     && touch /home/vscode/.abuild/abuild.conf \
     && cp /etc/abuild.conf /home/vscode/.abuild
 
-RUN abuild-keygen -ain
-
 WORKDIR ${SNAPD_ABUILD_DIR}
 RUN cd ${SNAPD_ABUILD_DIR} \
     && find .. -exec readlink -f {} \; \
+    && abuild-keygen -ain \
     && abuild checksum && abuild -r
