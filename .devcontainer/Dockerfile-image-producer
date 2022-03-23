@@ -17,14 +17,10 @@ RUN apk update \
     && apk upgrade \
     && apk add --no-cache \
         alpine-sdk \
-        apparmor \
         curl \
         doas \
         fennel \
         git \
-        go \
-        libcap \
-        libseccomp \
         lua5.3-dev \
         luarocks5.3 \
         make \
@@ -33,18 +29,29 @@ RUN apk update \
         openssl-dev \
         sed \
         shadow \
-        shellcheck \
-        squashfs-tools \
         su-exec \
         sudo \
         util-linux \
         wget \
-        xfsprogs
+        EOL
 
+# snapd builddeps:
+RUN apk update \
+    && apk upgrade \
+    && apk add --no-cache \
+        apparmor \
+        git \
+        go \
+        libcap \
+        libseccomp \
+        shellcheck \
+        squashfs-tools \
+        xfsprogs \
+        EOL
         # systemd \
         # libsystemd \
         # go-tools \
-        # \
+
         # python \
         # python-docutils \
         # EOL
