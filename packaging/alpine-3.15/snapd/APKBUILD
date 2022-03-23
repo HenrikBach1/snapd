@@ -3,21 +3,48 @@
 
 # HB1: Below values are taken from: ../../../packaging/arch/PKGBUILD
 pkgname=snapd
-pkgdesc="Service and tools for management of snap packages."
-depends="'squashfs-tools' 'libseccomp' 'libsystemd' 'apparmor'"
-optdepends="'bash-completion: bash completion support'
-            'xdg-desktop-portal: desktop integration'"
 pkgver=2.54.2
+
 pkgrel=1
-arch="all"  # "'x86_64' 'i686' 'armv7h' 'aarch64'"
+pkgdesc="Service and tools for management of snap packages."
 url="https://github.com/snapcore/snapd"
-license='GPL3'
-makedepends="'git' 'go' 'go-tools' 'libseccomp' 'libcap' 'systemd' 'xfsprogs' 'python-docutils' 'apparmor'"
+arch="all"  # "'x86_64' 'i686' 'armv7h' 'aarch64'"
+license="GPL3"
+makedepends="
+	git
+	go
+	go-tools
+	libseccomp
+	libcap
+	systemd
+	xfsprogs
+	python-docutils
+	apparmor
+	"
+depends="
+	squashfs-tools
+	libseccomp
+	libsystemd
+	apparmor
+	"
+optdepends="
+	bash-completion: bash completion support
+	xdg-desktop-portal: desktop integration
+	"
 # the following checkdepends are only required for static checks and unit tests,
 # unit tests are currently enabled
-checkdepends="'python' 'squashfs-tools' 'shellcheck'"
-conflicts='snap-confine'
-options="'!strip' 'emptydirs'"
+checkdepends="
+	python
+	squashfs-tools
+	shellcheck
+	"
+conflicts="
+	snap-confine
+  "
+options="
+	!strip
+	emptydirs
+	"
 # HB1: TODO: ?: install=$pkgname.install
 # source="git+https://github.com/snapcore/$pkgname.git"
 # subpackages="$pkgname-dev $pkgname-doc"
