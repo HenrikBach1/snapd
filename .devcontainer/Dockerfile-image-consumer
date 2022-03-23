@@ -6,9 +6,11 @@ ARG VARIANT="3.15"
 
 FROM vsc-snapd-github-public-master-live-devcontainer-alpine:latest
 
+ENV VARIANT="3.15"
 ENV DockerfileContext="/home/sad/projects/snapd/snapd-github-public-master-live-devcontainer-alpine"
-ENV SNAPD_ABUILD_DIR=${DockerfileContext}/./packaging/alpine-3.14/snapd/
+ENV SNAPD_ABUILD_DIR=${DockerfileContext}/./packaging/alpine-${VARIANT}/snapd/
 
 WORKDIR ${SNAPD_ABUILD_DIR}
 RUN cd ${SNAPD_ABUILD_DIR} \
+    && find .. -exec readlink -f {} \; \
     && abuild checksum && abuild -r
