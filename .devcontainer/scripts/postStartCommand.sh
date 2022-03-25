@@ -12,14 +12,13 @@ $ARG remoteUser=vscode
 $ARG VARIANT="3.15"
 $ARG PROJECTS_DIR=/projects
 $ARG DATA_DIR=${PROJECTS_DIR}/data
-$ARG DockerfileContext="${PROJECTS_DIR}/snapd/snapd-github-public-master-live-devcontainer-alpine"
+$ARG CONTEXT="${PROJECTS_DIR}/snapd/snapd-github-public-master-live-devcontainer-alpine"
 
 $ARG PACKAGER_NAME="Henrik Bach"
 $ARG PACKAGER_EMAIL="bach.henrik@gmail.com"
 
 # $FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
 
-$ENV CONTEXT=${DockerfileContext}
 $ENV SNAPD_ABUILD_DIR=${CONTEXT}/packaging/alpine-${VARIANT}/snapd
 
 # To build toAPK:
