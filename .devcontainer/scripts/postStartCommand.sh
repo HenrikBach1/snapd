@@ -19,7 +19,8 @@ $ARG PACKAGER_EMAIL="bach.henrik@gmail.com"
 
 # $FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
 
-$ENV SNAPD_ABUILD_DIR=${DockerfileContext}/packaging/alpine-${VARIANT}/snapd
+$ENV CONTEXT=${DockerfileContext}
+$ENV SNAPD_ABUILD_DIR=${CONTEXT}/packaging/alpine-${VARIANT}/snapd
 
 # To build toAPK:
 $ENV LUA_ROCKS=luarocks-5.3
