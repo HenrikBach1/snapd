@@ -13,20 +13,20 @@ license="GPL3"
 makedepends="
 	git
 	go
-	go-tools
 	libseccomp
 	libcap
-	systemd
 	xfsprogs
-	python-docutils
 	apparmor
 	"
+	# python-docutils
+	# go-tools
+	# systemd
 depends="
 	squashfs-tools
 	libseccomp
-	libsystemd
 	apparmor
 	"
+	# libsystemd
 optdepends="
 	bash-completion: bash completion support
 	xdg-desktop-portal: desktop integration
@@ -34,10 +34,10 @@ optdepends="
 # the following checkdepends are only required for static checks and unit tests,
 # unit tests are currently enabled
 checkdepends="
-	python
 	squashfs-tools
 	shellcheck
 	"
+	# python
 conflicts="
 	snap-confine
   "

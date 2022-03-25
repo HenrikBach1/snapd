@@ -2,9 +2,9 @@
 
 # [Choice] Alpine version: 3.14, 3.13, 3.12, 3.11
 # HB1: It seems that build.args and below ARGs doesn't pass to Dockerfile build from .devcontainer:
+ARG remoteUser=vscode
 ARG VARIANT="3.15"
 
-ARG remoteUser=vscode
 ARG PACKAGER_NAME="Henrik Bach"
 ARG PACKAGER_EMAIL="bach.henrik@gmail.com"
 
