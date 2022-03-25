@@ -11,7 +11,7 @@ export WORKDIR=cd
 $ARG remoteUser=vscode
 $ARG VARIANT="3.15"
 $ARG PROJECTS_DIR=/projects
-$ARGENV DATA_DIR=${PROJECTS_DIR}/data
+$ARG DATA_DIR=${PROJECTS_DIR}/data
 $ARG DockerfileContext="${PROJECTS_DIR}/snapd/snapd-github-public-master-live-devcontainer-alpine"
 
 $ARG PACKAGER_NAME="Henrik Bach"
