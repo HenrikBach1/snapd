@@ -4,13 +4,12 @@
 	//TODO: HB1: How to get a fixed container image name?: vsc-snapd-github-public-master-live-devcontainer-alpine:latest
 	"name": "snapd-Alpine-3.15"
 	,"build": {
-		"dockerfile": "Dockerfile-image-producer"
-		// "dockerfile": "Dockerfile-image-consumer"
+		"dockerfile": "Dockerfile"
 		// Update 'VARIANT' to pick an Alpine version: 3.12, 3.13, 3.14, 3.15
 		// HB1: It seems that build.args doesn't pass to Dockerfile build from .devcontainer:
 		,"args": {
 			"VARIANT": "3.15"
-			,"CONTEXT":"/projects/snapd/snapd-github-public-master-live-devcontainer-alpine"
+			,"CONTEXT_DIR":"/projects/snapd/snapd-github-public-master-live-devcontainer-alpine"
 		}
 	}
 	
@@ -34,8 +33,7 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "uname -a",
 	
-	// ,"postStartCommand": "nohup bash -c 'postStartCommand.bat"
-	// ,"postStartCommand": "nohup bash -c 'cd ${SNAPD_ABUILD_DIR} && find .. -exec readlink -f {} \\;  abuild checksum && abuild -r'"
+	,"postStartCommand": "nohup bash -c '/postStartCommand.sh'"
 
 	// Replace when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--init", "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],

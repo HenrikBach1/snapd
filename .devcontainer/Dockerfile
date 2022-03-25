@@ -6,7 +6,7 @@ ARG remoteUser=vscode
 ARG VARIANT="3.15"
 ARG PROJECTS_DIR=/projects
 ARG DATA_DIR=${PROJECTS_DIR}/data
-ARG CONTEXT="${PROJECTS_DIR}/snapd/snapd-github-public-master-live-devcontainer-alpine"
+ARG CONTEXT_DIR="${PROJECTS_DIR}/snapd/snapd-github-public-master-live-devcontainer-alpine"
 
 ARG PACKAGER_NAME="Henrik Bach"
 ARG PACKAGER_EMAIL="bach.henrik@gmail.com"
@@ -14,6 +14,9 @@ ARG PACKAGER_EMAIL="bach.henrik@gmail.com"
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
 
 ENV remoteUser=vscode
+
+COPY scripts/postStartCommand.sh /postStartCommand.sh
+RUN chmod a+wx /postStartCommand.sh
 
 RUN apk update \
     && apk upgrade \
@@ -75,10 +78,3 @@ RUN echo "permit nopass keepenv :$remoteUser" | sudo tee -a /etc/doas.conf
 USER $remoteUser
 
 RUN doas addgroup $remoteUser abuild
-
-# HB1: TODO: RUN MKDIR(/var/cache/distfiles)
-RUN doas mkdir -p /var/cache/distfiles \
-    && doas chgrp abuild -R /var/cache/distfiles \
-    && doas chmod g+w -R /var/cache/distfiles
-
-RUN abuild-keygen -ain

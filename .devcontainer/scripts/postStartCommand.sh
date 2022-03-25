@@ -2,26 +2,44 @@
 # postStartCommand.bat:
 set -xv
 
+echo > nohup.out
+
 export ENV=export
 export ARG=export
 export RUN=
 export WORKDIR=cd
+export USER=sudo su
 
 # HB1: It seems that build.args doesn't pass to Dockerfile build from .devcontainer:
 $ARG remoteUser=vscode
 $ARG VARIANT="3.15"
 $ARG PROJECTS_DIR=/projects
 $ARG DATA_DIR=${PROJECTS_DIR}/data
-$ARG CONTEXT="${PROJECTS_DIR}/snapd/snapd-github-public-master-live-devcontainer-alpine"
+$ARG CONTEXT_DIR="${PROJECTS_DIR}/snapd/snapd-github-public-master-live-devcontainer-alpine"
 
 $ARG PACKAGER_NAME="Henrik Bach"
 $ARG PACKAGER_EMAIL="bach.henrik@gmail.com"
 
 # $FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
 
-$ENV SNAPD_ABUILD_DIR=${CONTEXT}/packaging/alpine-${VARIANT}/snapd
+$ENV SNAPD_ABUILD_DIR=${CONTEXT_DIR}/packaging/alpine-${VARIANT}/snapd
 
-# To build toAPK:
+###############################################################################
+# Switch to remoteUser
+###############################################################################
+
+# Following overall: https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package:
+
+$USER $remoteUser
+
+# HB1: TODO: $RUN MKDIR(/var/cache/distfiles)
+$RUN doas mkdir -p /var/cache/distfiles \
+    && doas chgrp abuild -R /var/cache/distfiles \
+    && doas chmod g+w -R /var/cache/distfiles
+
+$RUN abuild-keygen -ain
+
+# Build toAPK:
 $ENV LUA_ROCKS=luarocks-5.3
 $ENV TOAPK_DIR="${DATA_DIR}/alpine/toapk"
 # HB1: TODO: $RUN GIT_CLONE(https://gitlab.com/Durrendal/toAPK.git, ${TOAPK_DIR}):
@@ -74,5 +92,7 @@ $RUN mkdir -p /home/vscode/.abuild \
 # $RUN cd ${SNAPD_ABUILD_DIR} \
 #     && find .. -exec readlink -f {} \; \
 #     && script -c 'abuild checksum && abuild -rv'
+
+# sudo rm /postStartCommand.sh
 
 set +xv
