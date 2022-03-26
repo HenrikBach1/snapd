@@ -21,10 +21,15 @@ RUN chmod a+wx /postStartCommand.sh
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache \
+        doas \
+        sudo
+
+RUN apk update \
+    && apk upgrade \
+    && apk add --no-cache \
         alpine-sdk \
         atools \
         curl \
-        doas \
         fennel \
         git \
         lua5.3-dev \
@@ -36,7 +41,6 @@ RUN apk update \
         sed \
         shadow \
         su-exec \
-        sudo \
         tree \
         util-linux \
         wget

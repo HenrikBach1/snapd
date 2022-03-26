@@ -1,0 +1,299 @@
+
+
+export ENV=export
+++ export ENV=export
+++ ENV=export
+export ARG=export
+++ export ARG=export
+++ ARG=export
+export RUN=sudo
+++ export RUN=sudo
+++ RUN=sudo
+export WORKDIR=cd
+++ export WORKDIR=cd
+++ WORKDIR=cd
+export USER=sudo su
+++ export USER=sudo su
+++ USER=sudo
+
+# HB1: It seems that build.args doesn't pass to Dockerfile build from .devcontainer:
+$ARG remoteUser=vscode
+++ export remoteUser=vscode
+++ remoteUser=vscode
+$ARG VARIANT="3.15"
+++ export VARIANT=3.15
+++ VARIANT=3.15
+$ARG PROJECTS_DIR=/projects
+++ export PROJECTS_DIR=/projects
+++ PROJECTS_DIR=/projects
+$ARG DATA_DIR=${PROJECTS_DIR}/data
+++ export DATA_DIR=/projects/data
+++ DATA_DIR=/projects/data
+$ARG CONTEXT_DIR="${PROJECTS_DIR}/snapd/snapd-github-public-master-live-devcontainer-alpine"
+++ export CONTEXT_DIR=/projects/snapd/snapd-github-public-master-live-devcontainer-alpine
+++ CONTEXT_DIR=/projects/snapd/snapd-github-public-master-live-devcontainer-alpine
+
+$ARG PACKAGER_NAME="Henrik Bach"
+++ export 'PACKAGER_NAME=Henrik Bach'
+++ PACKAGER_NAME='Henrik Bach'
+$ARG PACKAGER_EMAIL="bach.henrik@gmail.com"
+++ export PACKAGER_EMAIL=bach.henrik@gmail.com
+++ PACKAGER_EMAIL=bach.henrik@gmail.com
+
+# $FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
+
+$ENV SNAPD_ABUILD_DIR=${CONTEXT_DIR}/packaging/alpine-${VARIANT}/snapd
+++ export SNAPD_ABUILD_DIR=/projects/snapd/snapd-github-public-master-live-devcontainer-alpine/packaging/alpine-3.15/snapd
+++ SNAPD_ABUILD_DIR=/projects/snapd/snapd-github-public-master-live-devcontainer-alpine/packaging/alpine-3.15/snapd
+
+# $RUN apk update \
+#     && apk upgrade \
+#     && apk add --no-cache \
+#         alpine-sdk \
+#         atools \
+#         curl \
+#         fennel \
+#         git \
+#         lua5.3-dev \
+#         luarocks5.3 \
+#         make \
+#         nano \
+#         openrc \
+#         openssl-dev \
+#         sed \
+#         shadow \
+#         su-exec \
+#         tree \
+#         util-linux \
+#         wget
+
+# # snapd builddeps:
+# $RUN apk update \
+#     && apk upgrade \
+#     && apk add --no-cache \
+#         apparmor \
+#         git \
+#         go \
+#         libcap \
+#         libseccomp \
+#         shellcheck \
+#         squashfs-tools \
+#         xfsprogs
+
+#         # systemd \
+#         # libsystemd \
+#         # go-tools \
+
+#         # python \
+#         # python-docutils \
+# # Install python/pip
+# $ENV PYTHONUNBUFFERED=1
+# $RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+# $RUN python3 -m ensurepip
+# $RUN pip3 install --no-cache --upgrade pip setuptools
+
+###############################################################################
+# Switch to remoteUser
+###############################################################################
+
+export RUN=
+++ export RUN=
+++ RUN=
+
+# Following overall: https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package:
+
+$USER $remoteUser
+++ sudo vscode
+sudo: vscode: command not found
+
+# HB1: TODO: $RUN MKDIR(/var/cache/distfiles)
+$RUN doas mkdir -p /var/cache/distfiles \
+    && doas chgrp abuild -R /var/cache/distfiles \
+    && doas chmod g+w -R /var/cache/distfiles
+++ doas mkdir -p /var/cache/distfiles
+++ doas chgrp abuild -R /var/cache/distfiles
+++ doas chmod g+w -R /var/cache/distfiles
+
+$RUN abuild-keygen -ain
+++ abuild-keygen -ain
+Generating RSA private key, 2048 bit long modulus (2 primes)
+..............................................+++++
+.........................................................................................................................................+++++
+e is 65537 (0x010001)
+writing RSA key
+>>> Installing /home/vscode/.abuild/bach.henrik@gmail.com-623ed8cc.rsa.pub to /etc/apk/keys...
+>>> 
+>>> Please remember to make a safe backup of your private key:
+>>> /home/vscode/.abuild/bach.henrik@gmail.com-623ed8cc.rsa
+>>> 
+
+# Build toAPK:
+$ENV LUA_ROCKS=luarocks-5.3
+++ export LUA_ROCKS=luarocks-5.3
+++ LUA_ROCKS=luarocks-5.3
+$ENV TOAPK_DIR="${DATA_DIR}/alpine/toapk"
+++ export TOAPK_DIR=/projects/data/alpine/toapk
+++ TOAPK_DIR=/projects/data/alpine/toapk
+# HB1: TODO: $RUN GIT_CLONE(https://gitlab.com/Durrendal/toAPK.git, ${TOAPK_DIR}):
+$RUN rm -rf ${TOAPK_DIR}
+++ rm -rf /projects/data/alpine/toapk
+$RUN mkdir -p ${TOAPK_DIR} \
+    && git clone https://gitlab.com/Durrendal/toAPK.git ${TOAPK_DIR}
+++ mkdir -p /projects/data/alpine/toapk
+++ git clone https://gitlab.com/Durrendal/toAPK.git /projects/data/alpine/toapk
+Cloning into '/projects/data/alpine/toapk'...
+#     && chgrp abuild -R ${TOAPK_DIR} \
+#     && chmod g+w -R ${TOAPK_DIR} \
+# #     && sudo ln -s ${TOAPK_DIR}/src/toAPK.fnl /usr/bin <------------------ # # HB1: TODO: Fails: https://gitlab.com/Durrendal/toAPK/-/issues/4
+# # HB1: TODO: https://gitlab.com/Durrendal/toAPK/-/issues/4#note_846955420
+
+    # Tag : Commit
+    # v1.0: 621b1479
+    # && git checkout 621b1479 \
+    #
+    # && $LUA_ROCKS install luasec --local \
+    # EOL
+# $RUN cd ${TOAPK_DIR} \
+#     && $LUA_ROCKS install luasocket --local \
+#     && make compile-bin \
+#     && doas make install-bin
+$RUN cd ${TOAPK_DIR} \
+    && $LUA_ROCKS install luasocket --local \
+    && make compile-lua \
+    && doas make install-lua
+++ cd /projects/data/alpine/toapk
+++ luarocks-5.3 install luasocket --local
+Warning: The directory '/home/vscode/.cache/luarocks' or its parent directory is not owned by the current user and the cache has been disabled. Please check the permissions and owner of that directory. If executing /usr/bin/luarocks-5.3 with sudo, you may want sudo's -H flag.
+Installing https://luarocks.org/luasocket-3.0.0-1.src.rock
+In file included from src/usocket.c:21:
+/usr/include/sys/poll.h:1:2: warning: #warning redirecting incorrect #include <sys/poll.h> to <poll.h> [-Wcpp]
+    1 | #warning redirecting incorrect #include <sys/poll.h> to <poll.h>
+      |  ^~~~~~~
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/buffer.c -o src/buffer.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/compat.c -o src/compat.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/auxiliar.c -o src/auxiliar.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/options.c -o src/options.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/timeout.c -o src/timeout.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/io.c -o src/io.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/usocket.c -o src/usocket.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/serial.c -o src/serial.o -DLUASOCKET_DEBUG
+gcc -shared -o socket/serial.so -L/usr/lib/lua5.3 src/buffer.o src/compat.o src/auxiliar.o src/options.o src/timeout.o src/io.o src/usocket.o src/serial.o
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/mime.c -o src/mime.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/compat.c -o src/compat.o -DLUASOCKET_DEBUG
+gcc -shared -o mime/core.so -L/usr/lib/lua5.3 src/mime.o src/compat.o
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/luasocket.c -o src/luasocket.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/timeout.c -o src/timeout.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/buffer.c -o src/buffer.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/io.c -o src/io.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/auxiliar.c -o src/auxiliar.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/options.c -o src/options.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/inet.c -o src/inet.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/except.c -o src/except.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/select.c -o src/select.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/tcp.c -o src/tcp.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/udp.c -o src/udp.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/compat.c -o src/compat.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/usocket.c -o src/usocket.o -DLUASOCKET_DEBUG
+In file included from src/usocket.c:21:
+/usr/include/sys/poll.h:1:2: warning: #warning redirecting incorrect #include <sys/poll.h> to <poll.h> [-Wcpp]
+    1 | #warning redirecting incorrect #include <sys/poll.h> to <poll.h>
+      |  ^~~~~~~
+In file included from src/usocket.c:21:
+/usr/include/sys/poll.h:1:2: warning: #warning redirecting incorrect #include <sys/poll.h> to <poll.h> [-Wcpp]
+    1 | #warning redirecting incorrect #include <sys/poll.h> to <poll.h>
+      |  ^~~~~~~
+gcc -shared -o socket/core.so -L/usr/lib/lua5.3 src/luasocket.o src/timeout.o src/buffer.o src/io.o src/auxiliar.o src/options.o src/inet.o src/except.o src/select.o src/tcp.o src/udp.o src/compat.o src/usocket.o
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/buffer.c -o src/buffer.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/compat.c -o src/compat.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/auxiliar.c -o src/auxiliar.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/options.c -o src/options.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/timeout.c -o src/timeout.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/io.c -o src/io.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/usocket.c -o src/usocket.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/unix.c -o src/unix.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/unixdgram.c -o src/unixdgram.o -DLUASOCKET_DEBUG
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/unixstream.c -o src/unixstream.o -DLUASOCKET_DEBUG
+gcc -shared -o socket/unix.so -L/usr/lib/lua5.3 src/buffer.o src/compat.o src/auxiliar.o src/options.o src/timeout.o src/io.o src/usocket.o src/unix.o src/unixdgram.o src/unixstream.o
+No existing manifest. Attempting to rebuild...
+luasocket 3.0.0-1 is now installed in /home/vscode/.luarocks (license: MIT)
+
+++ make compile-lua
+make fetch-libraries
+make[1]: Entering directory '/projects/data/alpine/toapk'
+#luarocks-5.3 install luasocket --local
+luarocks-5.3 install luasec --local
+Warning: The directory '/home/vscode/.cache/luarocks' or its parent directory is not owned by the current user and the cache has been disabled. Please check the permissions and owner of that directory. If executing /usr/bin/luarocks-5.3 with sudo, you may want sudo's -H flag.
+Warning: falling back to curl - install luasec to get native HTTPS support
+Installing https://luarocks.org/luasec-1.0.2-1.src.rock
+In file included from src/luasocket/usocket.h:35,
+                 from src/luasocket/socket.h:20,
+                 from src/ssl.c:29:
+/usr/include/sys/poll.h:1:2: warning: #warning redirecting incorrect #include <sys/poll.h> to <poll.h> [-Wcpp]
+    1 | #warning redirecting incorrect #include <sys/poll.h> to <poll.h>
+      |  ^~~~~~~
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/options.c -o src/options.o -DWITH_LUASOCKET -DLUASOCKET_DEBUG -I/usr/include -Isrc/ -Isrc/luasocket
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/config.c -o src/config.o -DWITH_LUASOCKET -DLUASOCKET_DEBUG -I/usr/include -Isrc/ -Isrc/luasocket
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/ec.c -o src/ec.o -DWITH_LUASOCKET -DLUASOCKET_DEBUG -I/usr/include -Isrc/ -Isrc/luasocket
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/x509.c -o src/x509.o -DWITH_LUASOCKET -DLUASOCKET_DEBUG -I/usr/include -Isrc/ -Isrc/luasocket
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/context.c -o src/context.o -DWITH_LUASOCKET -DLUASOCKET_DEBUG -I/usr/include -Isrc/ -Isrc/luasocket
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/ssl.c -o src/ssl.o -DWITH_LUASOCKET -DLUASOCKET_DEBUG -I/usr/include -Isrc/ -Isrc/luasocket
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/luasocket/buffer.c -o src/luasocket/buffer.o -DWITH_LUASOCKET -DLUASOCKET_DEBUG -I/usr/include -Isrc/ -Isrc/luasocket
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/luasocket/io.c -o src/luasocket/io.o -DWITH_LUASOCKET -DLUASOCKET_DEBUG -I/usr/include -Isrc/ -Isrc/luasocket
+In file included from src/luasocket/usocket.h:35,
+                 from src/luasocket/socket.h:20,
+                 from src/luasocket/usocket.c:12:
+/usr/include/sys/poll.h:1:2: warning: #warning redirecting incorrect #include <sys/poll.h> to <poll.h> [-Wcpp]
+    1 | #warning redirecting incorrect #include <sys/poll.h> to <poll.h>
+      |  ^~~~~~~
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/luasocket/timeout.c -o src/luasocket/timeout.o -DWITH_LUASOCKET -DLUASOCKET_DEBUG -I/usr/include -Isrc/ -Isrc/luasocket
+gcc -O2 -fPIC -I/usr/include/lua5.3 -c src/luasocket/usocket.c -o src/luasocket/usocket.o -DWITH_LUASOCKET -DLUASOCKET_DEBUG -I/usr/include -Isrc/ -Isrc/luasocket
+gcc -shared -o ssl.so -L/usr/lib/lua5.3 src/options.o src/config.o src/ec.o src/x509.o src/context.o src/ssl.o src/luasocket/buffer.o src/luasocket/io.o src/luasocket/timeout.o src/luasocket/usocket.o -L/usr/lib -Wl,-rpath,/usr/lib: -lssl -lcrypto
+luasec 1.0.2-1 is now installed in /home/vscode/.luarocks (license: MIT)
+
+make[1]: Leaving directory '/projects/data/alpine/toapk'
+fennel --compile src/toAPK.fnl --add-macro-path src/macros.fnl > src/toAPK.lua
+sed -i '1 i\-- Author: Will Sinatra <wpsinatra@gmail.com> | License: GPLv3' src/toAPK.lua
+sed -i '1 i\#!/usr/bin/lua5.3' src/toAPK.lua
+++ doas make install-lua
+install ./src/toAPK.lua -D /usr/bin/toAPK
+# $RUN cd ${TOAPK_DIR} \
+# #     && make test-all
+
+# # To build aports: Is this necessary?:
+# $ENV APORTS_DIR="${DATA_DIR}/alpine/aports"
+# # HB1: TODO: $RUN GIT_CLONE(https://gitlab.alpinelinux.org/alpine/aports, ${APORTS_DIR}):
+# $RUN mkdir -p ${APORTS_DIR} \
+#     && git clone https://gitlab.alpinelinux.org/alpine/aports ${APORTS_DIR} \
+#     && chgrp abuild -R ${APORTS_DIR} \
+#     && chmod g+w -R ${APORTS_DIR}
+
+$RUN git config --global user.name "${PACKAGER_NAME}"
+++ git config --global user.name 'Henrik Bach'
+$RUN git config --global user.email "${PACKAGER_EMAIL}"
+++ git config --global user.email bach.henrik@gmail.com
+
+$RUN doas sed -i s/#PACKAGER=/PACKAGER=/g /etc/abuild.conf
+++ doas sed -i s/#PACKAGER=/PACKAGER=/g /etc/abuild.conf
+$RUN doas sed -i s/#MAINTAINER=/MAINTAINER=/g /etc/abuild.conf
+++ doas sed -i s/#MAINTAINER=/MAINTAINER=/g /etc/abuild.conf
+$RUN doas sed -i 's/your@email.address/'"${PACKAGER_EMAIL}"'/g' /etc/abuild.conf
+++ doas sed -i s/your@email.address/bach.henrik@gmail.com/g /etc/abuild.conf
+$RUN doas sed -i 's/Your\ Name/'"${PACKAGER_NAME}"'/g' /etc/abuild.conf
+++ doas sed -i 's/Your\ Name/Henrik Bach/g' /etc/abuild.conf
+
+$RUN mkdir -p /home/vscode/.abuild \
+    && touch /home/vscode/.abuild/abuild.conf \
+    && cp /etc/abuild.conf /home/vscode/.abuild
+++ mkdir -p /home/vscode/.abuild
+++ touch /home/vscode/.abuild/abuild.conf
+++ cp /etc/abuild.conf /home/vscode/.abuild
+
+# $WORKDIR ${SNAPD_ABUILD_DIR}
+# $RUN cd ${SNAPD_ABUILD_DIR} \
+#     && find .. -exec readlink -f {} \; \
+#     && script -c 'abuild checksum && abuild -rv'
+
+# sudo rm /postStartCommand.sh
+
+set +xv
+++ set +xv

@@ -6,7 +6,7 @@ echo > nohup.out
 
 export ENV=export
 export ARG=export
-export RUN=
+export RUN=sudo
 export WORKDIR=cd
 export USER=sudo su
 
@@ -24,9 +24,57 @@ $ARG PACKAGER_EMAIL="bach.henrik@gmail.com"
 
 $ENV SNAPD_ABUILD_DIR=${CONTEXT_DIR}/packaging/alpine-${VARIANT}/snapd
 
+# $RUN apk update \
+#     && apk upgrade \
+#     && apk add --no-cache \
+#         alpine-sdk \
+#         atools \
+#         curl \
+#         fennel \
+#         git \
+#         lua5.3-dev \
+#         luarocks5.3 \
+#         make \
+#         nano \
+#         openrc \
+#         openssl-dev \
+#         sed \
+#         shadow \
+#         su-exec \
+#         tree \
+#         util-linux \
+#         wget
+
+# # snapd builddeps:
+# $RUN apk update \
+#     && apk upgrade \
+#     && apk add --no-cache \
+#         apparmor \
+#         git \
+#         go \
+#         libcap \
+#         libseccomp \
+#         shellcheck \
+#         squashfs-tools \
+#         xfsprogs
+
+#         # systemd \
+#         # libsystemd \
+#         # go-tools \
+
+#         # python \
+#         # python-docutils \
+# # Install python/pip
+# $ENV PYTHONUNBUFFERED=1
+# $RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+# $RUN python3 -m ensurepip
+# $RUN pip3 install --no-cache --upgrade pip setuptools
+
 ###############################################################################
 # Switch to remoteUser
 ###############################################################################
+
+export RUN=
 
 # Following overall: https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package:
 
