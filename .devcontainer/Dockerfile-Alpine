@@ -15,8 +15,8 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
 
 ENV remoteUser=vscode
 
-COPY scripts/postStartCommand.sh /postStartCommand.sh
-RUN chmod a+wx /postStartCommand.sh
+COPY scripts/postStartCommand-Alpine.sh /postStartCommand-Alpine.sh
+RUN chmod a+wx /postStartCommand-Alpine.sh
 
 RUN apk update \
     && apk upgrade \
