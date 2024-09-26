@@ -91,3 +91,8 @@ cmd/test-driver
 
 # Image files
 *.img
+
+# HB1: ------------------------------------
+typescript
+nohup.out
+.devcontainer/devcontainer.json

@@ -1,0 +1,16 @@
+# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/alpine/.devcontainer/base.Dockerfile
+
+# [Choice] Alpine version: 3.14, 3.13, 3.12, 3.11
+# HB1: It seems that build.args doesn't pass to Dockerfile build from .devcontainer:
+ARG VARIANT="3.15"
+
+FROM vsc-snapd-github-public-master-live-devcontainer-alpine:latest
+
+ENV VARIANT="3.15"
+ENV CONTEXT_DIR="/home/sad/projects/snapd/snapd-github-public-master-live-devcontainer-alpine"
+ENV SNAPD_ABUILD_DIR=${CONTEXT_DIR}/./packaging/alpine-${VARIANT}/snapd/
+
+WORKDIR ${SNAPD_ABUILD_DIR}
+RUN cd ${SNAPD_ABUILD_DIR} \
+    && find .. -exec readlink -f {} \; \
+    && abuild checksum && abuild -r
